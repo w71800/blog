@@ -1,0 +1,64 @@
+---
+/**
+ * 輕量留言：Giscus（GitHub Discussions）
+ * 設定環境變數見 .env.example
+ */
+const repo = import.meta.env.PUBLIC_GISCUS_REPO;
+const repoId = import.meta.env.PUBLIC_GISCUS_REPO_ID;
+const category = import.meta.env.PUBLIC_GISCUS_CATEGORY ?? 'Announcements';
+const categoryId = import.meta.env.PUBLIC_GISCUS_CATEGORY_ID;
+const mapping = import.meta.env.PUBLIC_GISCUS_MAPPING ?? 'pathname';
+const lang = import.meta.env.PUBLIC_GISCUS_LANG ?? 'zh-TW';
+
+const configured = Boolean(repo && repoId && categoryId);
+---
+
+{
+  configured ? (
+    <section style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border);">
+      <h2 style="font-size: 1.1rem;">留言</h2>
+      <p style="color: var(--muted); font-size: 0.9rem;">
+        使用 GitHub 登入即可留言（由 Giscus 提供）。
+      </p>
+      <div class="giscus" />
+      <script
+        define:vars={{
+          repo,
+          repoId,
+          category,
+          categoryId,
+          mapping,
+          lang,
+        }}
+      >
+        const script = document.createElement('script');
+        script.src = 'https://giscus.app/client.js';
+        script.async = true;
+        script.crossOrigin = 'anonymous';
+        script.setAttribute('data-repo', repo);
+        script.setAttribute('data-repo-id', repoId);
+        script.setAttribute('data-category', category);
+        script.setAttribute('data-category-id', categoryId);
+        script.setAttribute('data-mapping', mapping);
+        script.setAttribute('data-strict', '0');
+        script.setAttribute('data-reactions-enabled', '1');
+        script.setAttribute('data-emit-metadata', '0');
+        script.setAttribute('data-input-position', 'bottom');
+        script.setAttribute('data-theme', 'preferred_color_scheme');
+        script.setAttribute('data-lang', lang);
+        script.setAttribute('data-loading', 'lazy');
+        document.body.appendChild(script);
+      </script>
+    </section>
+  ) : (
+    <section style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border);">
+      <h2 style="font-size: 1.1rem;">留言</h2>
+      <p style="color: var(--muted); font-size: 0.9rem;">
+        尚未設定 Giscus。請在專案根目錄建立 <code>.env</code>，參考{' '}
+        <code>.env.example</code>，並至{' '}
+        <a href="https://giscus.app/zh-TW">giscus.app</a> 取得 repo 與 category
+        ID。
+      </p>
+    </section>
+  )
+}

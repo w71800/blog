@@ -1,0 +1,16 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PostList from '../components/PostList.astro';
+import { getCollection } from 'astro:content';
+
+const all = await getCollection('blog', ({ data }) => !data.draft);
+const posts = all.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+---
+
+<BaseLayout title="首頁 · 部落格" description="以 Markdown 與靜態站發佈的個人部落格">
+  <h1 style="font-size: 1.75rem; margin-bottom: 0.5rem;">最新文章</h1>
+  <p style="color: var(--muted); margin-top: 0;">
+    使用 Astro Content Collections、標籤、站內搜尋與 Giscus 留言。
+  </p>
+  <PostList posts={posts} />
+</BaseLayout>

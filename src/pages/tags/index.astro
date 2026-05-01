@@ -1,0 +1,38 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const posts = await getCollection('blog', ({ data }) => !data.draft);
+const counts = new Map<string, number>();
+for (const p of posts) {
+  for (const t of p.data.tags) {
+    counts.set(t, (counts.get(t) ?? 0) + 1);
+  }
+}
+const tags = Array.from(counts.entries()).sort((a, b) => {
+  if (b[1] !== a[1]) return b[1] - a[1];
+  return a[0].localeCompare(b[0], 'zh-Hant');
+});
+---
+
+<BaseLayout title="標籤 · 部落格" description="依標籤瀏覽文章">
+  <h1 style="font-size: 1.75rem;">標籤</h1>
+  <p style="color: var(--muted); margin-top: 0;">
+    點選標籤查看相關文章。
+  </p>
+  <ul style="list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 0.65rem;">
+    {
+      tags.map(([tag, n]) => (
+        <li>
+          <a
+            href={`/tags/${encodeURIComponent(tag)}/`}
+            style="display: inline-block; padding: 0.35rem 0.75rem; border-radius: 999px; background: var(--tag-bg); color: var(--tag-text); text-decoration: none; font-size: 0.95rem;"
+          >
+            {tag}
+            <span style="opacity: 0.75; margin-left: 0.35rem;">{n}</span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</BaseLayout>

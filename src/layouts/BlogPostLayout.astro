@@ -1,0 +1,57 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Giscus from '../components/Giscus.astro';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  post: CollectionEntry<'blog'>;
+}
+
+const { post } = Astro.props;
+const { title, description, pubDate, updatedDate, tags } = post.data;
+const formatted = pubDate.toLocaleDateString('zh-TW', {
+  year: 'numeric',
+  month: 'short',
+  day: 'numeric',
+});
+const updated =
+  updatedDate &&
+  updatedDate.toLocaleDateString('zh-TW', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  });
+---
+
+<BaseLayout title={`${title} · 部落格`} description={description}>
+  <article class="prose">
+    <h1 style="margin-bottom: 0.25rem;">{title}</h1>
+    <p style="color: var(--muted); margin-top: 0; font-size: 0.95rem;">
+      <time datetime={pubDate.toISOString()}>{formatted}</time>
+      {
+        updated && (
+          <>
+            {' '}
+            · 更新 <time datetime={updatedDate!.toISOString()}>{updated}</time>
+          </>
+        )
+      }
+    </p>
+    {
+      tags.length > 0 && (
+        <p style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 1rem 0;">
+          {tags.map((tag) => (
+            <a
+              href={`/tags/${encodeURIComponent(tag)}`}
+              style="font-size: 0.85rem; padding: 0.2rem 0.6rem; border-radius: 999px; background: var(--tag-bg); color: var(--tag-text); text-decoration: none;"
+            >
+              {tag}
+            </a>
+          ))}
+        </p>
+      )
+    }
+    <slot />
+    <Giscus />
+  </article>
+</BaseLayout>

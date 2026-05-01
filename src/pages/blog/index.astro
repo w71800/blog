@@ -1,0 +1,14 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostList from '../../components/PostList.astro';
+import { getCollection } from 'astro:content';
+
+const all = await getCollection('blog', ({ data }) => !data.draft);
+const posts = all.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+---
+
+<BaseLayout title="文章列表 · 部落格" description="所有文章">
+  <h1 style="font-size: 1.75rem;">文章</h1>
+  <p style="color: var(--muted); margin-top: 0;">共 {posts.length} 篇</p>
+  <PostList posts={posts} />
+</BaseLayout>
