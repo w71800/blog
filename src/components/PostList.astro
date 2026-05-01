@@ -1,5 +1,6 @@
 ---
 import type { CollectionEntry } from 'astro:content';
+import PostTags from './PostTags';
 
 interface Props {
   posts: CollectionEntry<'blog'>[];
@@ -23,21 +24,14 @@ const { posts } = Astro.props;
         <p style="color: var(--muted); margin: 0.35rem 0 0; font-size: 0.95rem;">
           {post.data.description}
         </p>
-        <p
-          style="display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.5rem 0 0; font-size: 0.8rem;"
+        <div
+          class="flex items-center gap-2"
         >
           <time datetime={post.data.pubDate.toISOString()}>
             {post.data.pubDate.toLocaleDateString('zh-TW')}
           </time>
-          {post.data.tags.map((tag) => (
-            <a
-              href={`/tags/${encodeURIComponent(tag)}/`}
-              style="color: var(--muted);"
-            >
-              #{tag}
-            </a>
-          ))}
-        </p>
+          <PostTags tags={post.data.tags} client:load/>
+        </div>
       </li>
     ))
   }
