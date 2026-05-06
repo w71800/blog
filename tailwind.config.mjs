@@ -17,6 +17,9 @@ export default {
               marginTop: '2em',
               marginBottom: '0.8em',
             },
+            strong: {
+              color: 'white',
+            },
             code: {
               color: 'white',
             },
