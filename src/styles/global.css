@@ -13,6 +13,7 @@
   --accent-hover: #1d4ed8;
   --tag-bg: #eff6ff;
   --tag-text: #1e40af;
+  --vue-tag-color: #42b883;
   font-family:
     system-ui,
     -apple-system,
@@ -41,6 +42,7 @@
 *::before,
 *::after {
   box-sizing: border-box;
+  position: relative;
 }
 
 body {
@@ -73,6 +75,22 @@ pre code {
   padding: 1rem;
   overflow-x: auto;
 }
+
+
+.prose pre[data-language]::before {
+  content: attr(data-language);
+  position: absolute;
+  top: 0.5rem;
+  right: 0.75rem;
+  font-size: 0.75rem;
+  opacity: 0.75;
+  letter-spacing: 0.04em;
+}
+
+.prose pre[data-language='vue']::before {
+  color: var(--vue-tag-color);
+}
+
 
 main {
   max-width: 42rem;
