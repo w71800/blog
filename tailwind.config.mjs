@@ -17,6 +17,11 @@ export default {
               marginTop: '2em',
               marginBottom: '0.8em',
             },
+            code: {
+              color: 'white',
+            },
+            'code::before': { content: 'none' },
+            'code::after': { content: 'none' },
           },
         },
       }),
