@@ -1,0 +1,32 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import PostTags from './PostTags';
+
+interface Props {
+  post: CollectionEntry<'blog'>;
+}
+
+const { post } = Astro.props;
+---
+
+<li
+  style="padding: 1.25rem 0; border-bottom: 1px solid var(--border);"
+>
+  <a
+    href={`/blog/${post.slug}/`}
+    style="font-size: 1.15rem; font-weight: 600; color: var(--text);"
+  >
+    {post.data.title}
+  </a>
+  <p style="color: var(--muted); margin: 0.35rem 0; font-size: 0.95rem;">
+    {post.data.description}
+  </p>
+  <div
+    class="flex items-center gap-2"
+  >
+    <time datetime={post.data.pubDate.toISOString()}>
+      {post.data.pubDate.toLocaleDateString('zh-TW')}
+    </time>
+    <PostTags tags={post.data.tags} client:load/>
+  </div>
+</li>
