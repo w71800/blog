@@ -24,3 +24,10 @@ updatedDate: 2026-05-08
 - 觸碰：[[llm-wiki-pattern]]（新建）、[[karpathy]]（新建）、[[knowledge-management]]（新建）、[[index|wiki/index.md]]（更新）
 - 偵測到矛盾：無
 - TODO：補 Karpathy 學經歷；展開 Zettelkasten / digital garden 等相關概念頁
+
+## [2026-05-08] ingest | How Terminals Work
+
+- 來源：[[how-terminals-work]]
+- 新建：[[terminal-emulator]]、[[pseudo-terminal]]、[[ansi-escape-sequences]]、[[terminal-input-modes]]、[[terminal-user-interface]]、[[terminfo]]、[[shell]]
+- 觸碰：[[index|wiki/index.md]]（更新）
+- 偵測到矛盾：無
