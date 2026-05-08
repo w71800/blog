@@ -3,13 +3,16 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import PostList from '../../components/PostList.astro';
 import type { CollectionEntry } from 'astro:content';
 import { getCollection } from 'astro:content';
+import { shortSlugOf } from '../../lib/wiki';
 
 export async function getStaticPaths() {
-  const posts = await getCollection('blog', ({ data }) => !data.draft);
+  const posts = await getCollection('posts', ({ data }) => !data.draft);
+  const wiki = await getCollection('wiki');
+
   const tagSet = new Set<string>();
-  for (const p of posts) {
-    for (const t of p.data.tags) tagSet.add(t);
-  }
+  for (const p of posts) for (const t of p.data.tags) tagSet.add(t);
+  for (const w of wiki) for (const t of w.data.tags) tagSet.add(t);
+
   return Array.from(tagSet).map((tag) => ({
     params: { tag },
     props: {
@@ -17,23 +20,56 @@ export async function getStaticPaths() {
       posts: posts
         .filter((p) => p.data.tags.includes(tag))
         .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()),
+      wikiPages: wiki
+        .filter((w) => w.data.tags.includes(tag))
+        .sort((a, b) => a.data.title.localeCompare(b.data.title, 'zh-Hant')),
     },
   }));
 }
 
 interface Props {
   tag: string;
-  posts: CollectionEntry<'blog'>[];
+  posts: CollectionEntry<'posts'>[];
+  wikiPages: CollectionEntry<'wiki'>[];
 }
 
-const { tag, posts } = Astro.props;
+const { tag, posts, wikiPages } = Astro.props;
 ---
 
-<BaseLayout title={`標籤：${tag} · 部落格`} description={`含「${tag}」的文章`}>
+<BaseLayout title={`標籤：${tag} · 部落格`} description={`含「${tag}」的內容`}>
   <p style="margin-bottom: 1rem;">
     <a href="/tags/">← 所有標籤</a>
   </p>
   <h1 style="font-size: 1.75rem; margin-bottom: 0.25rem;">#{tag}</h1>
-  <p style="color: var(--muted); margin-top: 0;">{posts.length} 篇文章</p>
-  <PostList posts={posts} />
+  <p style="color: var(--muted); margin-top: 0;">
+    {posts.length} 篇文章 · {wikiPages.length} 則筆記
+  </p>
+
+  {posts.length > 0 && (
+    <section style="margin-top: 1.5rem;">
+      <h2 style="font-size: 1.1rem;">文章</h2>
+      <PostList posts={posts} />
+    </section>
+  )}
+
+  {wikiPages.length > 0 && (
+    <section style="margin-top: 2rem;">
+      <h2 style="font-size: 1.1rem;">筆記</h2>
+      <ul style="list-style: none; padding: 0; margin: 0;">
+        {wikiPages.map((w) => (
+          <li style="padding: 0.75rem 0; border-bottom: 1px solid var(--border);">
+            <a
+              href={`/wiki/${shortSlugOf(w)}/`}
+              style="font-size: 1.05rem; font-weight: 600; color: var(--text);"
+            >
+              {w.data.title}
+            </a>
+            <p style="color: var(--muted); margin: 0.25rem 0 0; font-size: 0.85rem;">
+              {w.data.type} · {w.data.status}
+            </p>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
 </BaseLayout>

@@ -1,0 +1,34 @@
+---
+import type { Backlink } from '../lib/wiki';
+
+interface Props {
+  backlinks: Backlink[];
+}
+
+const { backlinks } = Astro.props;
+---
+
+{
+  backlinks.length > 0 && (
+    <section
+      class="backlinks"
+      style="margin-top: 3rem; padding-top: 1.5rem; border-top: 1px dashed var(--border);"
+    >
+      <h2 style="font-size: 1.05rem; color: var(--muted); font-weight: 600;">
+        反向連結（{backlinks.length}）
+      </h2>
+      <ul style="list-style: none; padding: 0; margin: 0.5rem 0 0; display: flex; flex-wrap: wrap; gap: 0.5rem 1rem;">
+        {backlinks.map((b) => (
+          <li>
+            <a
+              href={`/wiki/${b.slug}/`}
+              style="color: var(--accent); text-decoration: none;"
+            >
+              ← {b.title}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )
+}

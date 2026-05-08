@@ -1,0 +1,107 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Backlinks from '../components/Backlinks.astro';
+import type { CollectionEntry } from 'astro:content';
+import type { Backlink } from '../lib/wiki';
+
+interface Props {
+  entry: CollectionEntry<'wiki'>;
+  backlinks: Backlink[];
+}
+
+const { entry, backlinks } = Astro.props;
+const { title, type, status, sources, links, tags, updatedDate } = entry.data;
+
+const statusLabel: Record<string, string> = {
+  seedling: '🌱 seedling',
+  budding: '🌿 budding',
+  evergreen: '🌳 evergreen',
+};
+
+const typeLabel: Record<string, string> = {
+  entity: '人物 / 事物',
+  concept: '概念',
+  topic: '主題',
+  source: '來源摘要',
+  meta: '站務',
+};
+
+const formattedUpdated = updatedDate
+  ? updatedDate.toLocaleDateString('zh-TW', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    })
+  : null;
+---
+
+<BaseLayout title={`${title} · Wiki`} description={title}>
+  <article class="prose wiki-page">
+    <p style="margin: 0 0 0.5rem; font-size: 0.85rem; color: var(--muted);">
+      <a href="/wiki/" style="color: var(--muted);">← Wiki</a>
+    </p>
+    <h1 style="margin-bottom: 0.25rem;">{title}</h1>
+
+    <p
+      style="display: flex; flex-wrap: wrap; gap: 0.5rem 0.75rem; align-items: center; color: var(--muted); margin: 0.25rem 0 1.25rem; font-size: 0.85rem;"
+    >
+      <span>{typeLabel[type] ?? type}</span>
+      <span>·</span>
+      <span>{statusLabel[status] ?? status}</span>
+      {formattedUpdated && (
+        <>
+          <span>·</span>
+          <span>更新於 {formattedUpdated}</span>
+        </>
+      )}
+    </p>
+
+    {tags.length > 0 && (
+      <p style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0 0 1.5rem;">
+        {tags.map((tag) => (
+          <a
+            href={`/tags/${encodeURIComponent(tag)}`}
+            style="font-size: 0.8rem; padding: 0.15rem 0.55rem; border-radius: 999px; background: var(--tag-bg); color: var(--tag-text); text-decoration: none;"
+          >
+            {tag}
+          </a>
+        ))}
+      </p>
+    )}
+
+    <slot />
+
+    {(sources.length > 0 || links.length > 0) && (
+      <section style="margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px dashed var(--border);">
+        {sources.length > 0 && (
+          <p style="margin: 0 0 0.5rem; font-size: 0.9rem; color: var(--muted);">
+            <strong style="color: var(--text);">Sources：</strong>
+            {sources.map((s, i) => (
+              <>
+                {i > 0 && ', '}
+                <a href={`/wiki/${s}/`} style="color: var(--accent);">
+                  {s}
+                </a>
+              </>
+            ))}
+          </p>
+        )}
+        {links.length > 0 && (
+          <p style="margin: 0; font-size: 0.9rem; color: var(--muted);">
+            <strong style="color: var(--text);">Links：</strong>
+            {links.map((l, i) => (
+              <>
+                {i > 0 && ', '}
+                <a href={`/wiki/${l}/`} style="color: var(--accent);">
+                  {l}
+                </a>
+              </>
+            ))}
+          </p>
+        )}
+      </section>
+    )}
+
+    <Backlinks backlinks={backlinks} />
+  </article>
+</BaseLayout>

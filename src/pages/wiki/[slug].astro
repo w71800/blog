@@ -1,0 +1,32 @@
+---
+import WikiPageLayout from '../../layouts/WikiPageLayout.astro';
+import { getCollection } from 'astro:content';
+import {
+  shortSlugOf,
+  getBacklinks,
+} from '../../lib/wiki';
+import type { CollectionEntry } from 'astro:content';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('wiki');
+  return entries
+    // index 頁由 src/pages/wiki/index.astro 親自渲染，避免 /wiki/index/ 與 /wiki/ 衝突
+    .filter((e) => shortSlugOf(e) !== 'index')
+    .map((entry) => ({
+      params: { slug: shortSlugOf(entry) },
+      props: { entry },
+    }));
+}
+
+interface Props {
+  entry: CollectionEntry<'wiki'>;
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+const backlinks = await getBacklinks(shortSlugOf(entry));
+---
+
+<WikiPageLayout entry={entry} backlinks={backlinks}>
+  <Content />
+</WikiPageLayout>

@@ -103,3 +103,43 @@ main {
   height: auto;
   border-radius: 8px;
 }
+
+/* Wiki-link 樣式：呼應 AGENTS.md §4.1 */
+.wiki-link {
+  background: var(--tag-bg);
+  color: var(--tag-text);
+  padding: 0.05em 0.35em;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.wiki-link:hover {
+  background: var(--tag-text);
+  color: var(--tag-bg);
+  text-decoration: none;
+}
+
+.wiki-link--missing {
+  background: transparent;
+  color: #c0392b;
+  border-bottom: 1px dashed #c0392b;
+  border-radius: 0;
+}
+
+/* 引用 callout */
+.prose blockquote {
+  border-left: 3px solid var(--accent);
+  background: rgba(127, 127, 127, 0.05);
+  padding: 0.5rem 1rem;
+  margin: 1rem 0;
+  color: var(--muted);
+}
+
+.prose blockquote p:first-child {
+  margin-top: 0;
+}
+
+.prose blockquote p:last-child {
+  margin-bottom: 0;
+}

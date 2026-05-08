@@ -2,7 +2,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Fuse from 'fuse.js';
 
 export type SearchDoc = {
-  slug: string;
+  kind: 'post' | 'wiki';
+  url: string;
   title: string;
   description: string;
   tags: string[];
@@ -183,9 +184,9 @@ export function SearchRoot() {
                 <li style={{ padding: '1rem', color: 'var(--muted)' }}>沒有符合的文章</li>
               )}
               {results.map((item) => (
-                <li key={item.slug} style={{ borderRadius: 8 }}>
+                <li key={item.url} style={{ borderRadius: 8 }}>
                   <a
-                    href={`/blog/${item.slug}/`}
+                    href={item.url}
                     onClick={() => onClose()}
                     style={{
                       display: 'block',
@@ -195,7 +196,20 @@ export function SearchRoot() {
                       borderRadius: 8,
                     }}
                   >
-                    <div style={{ fontWeight: 600 }}>{item.title}</div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                      <span
+                        style={{
+                          fontSize: '0.7rem',
+                          padding: '0.1rem 0.4rem',
+                          borderRadius: 4,
+                          background: item.kind === 'wiki' ? 'var(--tag-bg)' : 'var(--border)',
+                          color: item.kind === 'wiki' ? 'var(--tag-text)' : 'var(--muted)',
+                        }}
+                      >
+                        {item.kind === 'wiki' ? 'wiki' : 'post'}
+                      </span>
+                      <div style={{ fontWeight: 600 }}>{item.title}</div>
+                    </div>
                     <div style={{ fontSize: '0.85rem', color: 'var(--muted)', marginTop: 4 }}>
                       {item.description}
                     </div>

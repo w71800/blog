@@ -1,0 +1,82 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection, getEntry } from 'astro:content';
+import { shortSlugOf } from '../../lib/wiki';
+
+const indexEntry = await getEntry('wiki', 'index');
+const Content = (await indexEntry?.render())?.Content;
+
+const all = await getCollection('wiki');
+const counts = {
+  entity: 0,
+  concept: 0,
+  topic: 0,
+  source: 0,
+  meta: 0,
+};
+const recent = [...all]
+  .filter((e) => e.data.type !== 'meta')
+  .sort((a, b) => {
+    const ad = a.data.updatedDate?.valueOf() ?? 0;
+    const bd = b.data.updatedDate?.valueOf() ?? 0;
+    return bd - ad;
+  })
+  .slice(0, 8);
+for (const e of all) {
+  counts[e.data.type] = (counts[e.data.type] ?? 0) + 1;
+}
+---
+
+<BaseLayout
+  title="Wiki · 個人筆記庫"
+  description="採用 LLM Wiki 模式維護的個人知識庫"
+>
+  <article class="prose wiki-page">
+    <h1 style="margin-bottom: 0.25rem;">Wiki</h1>
+    <p style="color: var(--muted); margin-top: 0;">
+      採用 <a href="/wiki/llm-wiki-pattern/">LLM Wiki 模式</a> 維護的個人筆記庫。
+      請參考根目錄的 <code>AGENTS.md</code> 瞭解工作流。
+    </p>
+
+    <ul
+      style="display: flex; flex-wrap: wrap; gap: 0.75rem 1.25rem; list-style: none; padding: 0; margin: 1rem 0 2rem; font-size: 0.9rem; color: var(--muted);"
+    >
+      <li>人物 / 事物：{counts.entity}</li>
+      <li>概念：{counts.concept}</li>
+      <li>主題：{counts.topic}</li>
+      <li>來源摘要：{counts.source}</li>
+      <li>站務：{counts.meta}</li>
+    </ul>
+
+    <section style="margin-bottom: 2rem;">
+      <h2 style="font-size: 1.1rem; margin-bottom: 0.5rem;">最近更新</h2>
+      <ul style="list-style: none; padding: 0; margin: 0;">
+        {recent.map((e) => (
+          <li style="padding: 0.5rem 0; border-bottom: 1px dashed var(--border);">
+            <a
+              href={`/wiki/${shortSlugOf(e)}/`}
+              style="font-weight: 600; color: var(--text);"
+            >
+              {e.data.title}
+            </a>
+            <span style="color: var(--muted); font-size: 0.85rem; margin-left: 0.5rem;">
+              {e.data.type} · {e.data.status}
+              {e.data.updatedDate && (
+                <>
+                  {' · '}
+                  {e.data.updatedDate.toLocaleDateString('zh-TW')}
+                </>
+              )}
+            </span>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    {Content && <Content />}
+
+    <p style="margin-top: 2rem; font-size: 0.85rem; color: var(--muted);">
+      <a href="/wiki/log/">查看操作日誌 →</a>
+    </p>
+  </article>
+</BaseLayout>

@@ -2,6 +2,7 @@
 title: 這是一篇測試用的 MD，真的用真人生成的
 description: 這邊是一些敘述
 pubDate: 2026-05-01
+draft: true
 tags:
   - 文章
   - 廢文

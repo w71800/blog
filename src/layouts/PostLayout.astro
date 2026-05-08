@@ -4,11 +4,11 @@ import Giscus from '../components/Giscus.astro';
 import type { CollectionEntry } from 'astro:content';
 
 interface Props {
-  post: CollectionEntry<'blog'>;
+  post: CollectionEntry<'posts'>;
 }
 
 const { post } = Astro.props;
-const { title, description, pubDate, updatedDate, tags } = post.data;
+const { title, description, pubDate, updatedDate, tags, derivedFrom } = post.data;
 const formatted = pubDate.toLocaleDateString('zh-TW', {
   year: 'numeric',
   month: 'short',
@@ -52,6 +52,23 @@ const updated =
       )
     }
     <slot />
+    {
+      derivedFrom && derivedFrom.length > 0 && (
+        <section style="margin-top: 2.5rem; padding-top: 1.25rem; border-top: 1px dashed var(--border); font-size: 0.9rem; color: var(--muted);">
+          <p style="margin: 0;">
+            提煉自筆記庫：
+            {derivedFrom.map((slug, i) => (
+              <>
+                {i > 0 && '、'}
+                <a href={`/wiki/${slug}/`} style="color: var(--accent);">
+                  [[{slug}]]
+                </a>
+              </>
+            ))}
+          </p>
+        </section>
+      )
+    }
     <Giscus />
   </article>
 </BaseLayout>

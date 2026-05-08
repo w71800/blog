@@ -3,7 +3,7 @@ import type { CollectionEntry } from 'astro:content';
 import PostTags from './PostTags';
 
 interface Props {
-  post: CollectionEntry<'blog'>;
+  post: CollectionEntry<'posts'>;
 }
 
 const { post } = Astro.props;
@@ -13,7 +13,7 @@ const { post } = Astro.props;
   style="padding: 1.25rem 0; border-bottom: 1px solid var(--border);"
 >
   <a
-    href={`/blog/${post.slug}/`}
+    href={`/posts/${post.slug}/`}
     style="font-size: 1.15rem; font-weight: 600; color: var(--text);"
   >
     {post.data.title}
